@@ -3,23 +3,36 @@ package com.project.personalexpensetracker.controllers;
 import com.project.personalexpensetracker.dtos.ExpenseDTO;
 import com.project.personalexpensetracker.dtos.IncomeDTO;
 import com.project.personalexpensetracker.entities.Income;
+import com.project.personalexpensetracker.entities.enums.ExpenseCategory;
+import com.project.personalexpensetracker.entities.enums.IncomeCategory;
+import com.project.personalexpensetracker.exceptions.InvalidCategoryException;
 import com.project.personalexpensetracker.services.IncomeService;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/income")
 @RequiredArgsConstructor
 @CrossOrigin("*")
+@Validated
 public class IncomeController {
     private final IncomeService incomeService;
 
     @PostMapping
-    public ResponseEntity<?> saveOrUpdateIncome(@RequestBody IncomeDTO incomeDTO){
-        Income createdIncome=incomeService.saveOrUpdateIncome(incomeDTO);
+    public ResponseEntity<?> postIncome(@Valid @RequestBody IncomeDTO incomeDTO){
+
+        try {
+            IncomeCategory.valueOf(incomeDTO.getCategory().name());
+        } catch (IllegalArgumentException e) {
+            throw new InvalidCategoryException("Invalid category provided: " + incomeDTO.getCategory());
+        }
+
+        Income createdIncome=incomeService.postIncome(incomeDTO);
         if(createdIncome!=null){
             return ResponseEntity.status(HttpStatus.CREATED).body(createdIncome);
         }else{

@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface IncomeService {
 
-    public Income saveOrUpdateIncome(IncomeDTO incomeDTO);
+    Income postIncome(IncomeDTO incomeDTO);
     List<IncomeDTO> getAllIncome();
     IncomeDTO getIncomeById(Long id);
     Income updateIncome(Long id,IncomeDTO incomeDTO);

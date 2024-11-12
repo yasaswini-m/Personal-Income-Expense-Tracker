@@ -18,4 +18,8 @@ public interface ExpenseRepository extends JpaRepository<Expense,Long> {
     Double sumAllAmount();
 
     Optional<Expense> findFirstByOrderByDateDesc();
+
+    @Query("SELECT e.category, SUM(e.amount) FROM Expense e GROUP BY e.category")
+    List<Object[]> getCategoryWiseSpending();
+
 }

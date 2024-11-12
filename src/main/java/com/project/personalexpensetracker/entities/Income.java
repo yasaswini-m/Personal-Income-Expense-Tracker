@@ -1,16 +1,18 @@
 package com.project.personalexpensetracker.entities;
 
 import com.project.personalexpensetracker.dtos.IncomeDTO;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.project.personalexpensetracker.entities.enums.IncomeCategory;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
 @Entity
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Income {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,7 +20,10 @@ public class Income {
 
     private String title;
     private String description;
-    private String category;
+
+    @Enumerated(EnumType.STRING)
+    private IncomeCategory category;
+
     private LocalDate date;
     private Integer amount;
 

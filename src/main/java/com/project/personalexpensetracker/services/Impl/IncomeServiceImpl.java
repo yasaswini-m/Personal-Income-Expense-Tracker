@@ -20,9 +20,17 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class IncomeServiceImpl implements IncomeService {
     private final IncomeRepository incomeRepository;
-    private final ModelMapper mapper;
-    public Income saveOrUpdateIncome(IncomeDTO incomeDTO){
-        Income income= mapper.map(incomeDTO,Income.class);
+
+    public Income postIncome(IncomeDTO incomeDTO){
+        return saveOrUpdateIncome(new Income(),incomeDTO);
+    }
+
+    public Income saveOrUpdateIncome(Income income, IncomeDTO incomeDTO){
+        income.setTitle(incomeDTO.getTitle());
+        income.setDate(incomeDTO.getDate());
+        income.setAmount(incomeDTO.getAmount());
+        income.setCategory(incomeDTO.getCategory());
+        income.setDescription(incomeDTO.getDescription());
         return incomeRepository.save(income);
     }
 
@@ -48,7 +56,7 @@ public class IncomeServiceImpl implements IncomeService {
     public Income updateIncome(Long id, IncomeDTO incomeDTO) {
         Optional<Income> optionalIncome=incomeRepository.findById(id);
         if(optionalIncome.isPresent()){
-            return saveOrUpdateIncome(incomeDTO);
+            return saveOrUpdateIncome(optionalIncome.get(),incomeDTO);
         }else{
             throw new EntityNotFoundException("Expense is not present with id"+id);
         }

@@ -2,6 +2,7 @@ package com.project.personalexpensetracker.services.Impl;
 
 import com.project.personalexpensetracker.dtos.ExpenseDTO;
 import com.project.personalexpensetracker.entities.Expense;
+import com.project.personalexpensetracker.entities.Income;
 import com.project.personalexpensetracker.repositories.ExpenseRepository;
 import com.project.personalexpensetracker.services.ExpenseService;
 import jakarta.persistence.EntityNotFoundException;
@@ -31,16 +32,17 @@ public class ExpenseServiceImpl implements ExpenseService {
         return expenseRepository.save(expense);
     }
 
-    public List<Expense> getAllExpenses(){
+    public List<ExpenseDTO> getAllExpenses(){
         return expenseRepository.findAll().stream()
                 .sorted(Comparator.comparing(Expense::getDate).reversed())
+                .map(Expense::getExpenseDto)
                 .collect(Collectors.toList());
     }
 
-    public Expense getExpenseById(Long id){
+    public ExpenseDTO getExpenseById(Long id){
         Optional<Expense> optionalExpense=expenseRepository.findById(id);
         if(optionalExpense.isPresent()){
-            return optionalExpense.get();
+            return optionalExpense.get().getExpenseDto();
         }else{
             throw new EntityNotFoundException("Expense does not exist with the id"+id);
         }

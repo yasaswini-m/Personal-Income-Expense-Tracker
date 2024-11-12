@@ -1,15 +1,19 @@
 package com.project.personalexpensetracker.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.project.personalexpensetracker.dtos.ExpenseDTO;
+import com.project.personalexpensetracker.dtos.IncomeDTO;
+import com.project.personalexpensetracker.entities.enums.ExpenseCategory;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
 @Entity
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Expense {
 
     @Id
@@ -18,7 +22,23 @@ public class Expense {
 
     private String title;
     private String description;
-    private String category;
+
+    @Enumerated(EnumType.STRING)
+    private ExpenseCategory category;
+
     private LocalDate date;
     private Integer amount;
+
+    public ExpenseDTO getExpenseDto(){
+        ExpenseDTO expenseDTO=new ExpenseDTO();
+
+        expenseDTO.setId(id);
+        expenseDTO.setDescription(description);
+        expenseDTO.setTitle(title);
+        expenseDTO.setAmount(amount);
+        expenseDTO.setCategory(category);
+        expenseDTO.setDate(date);
+
+        return expenseDTO;
+    }
 }

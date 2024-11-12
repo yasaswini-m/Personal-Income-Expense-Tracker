@@ -2,22 +2,33 @@ package com.project.personalexpensetracker.controllers;
 
 import com.project.personalexpensetracker.dtos.ExpenseDTO;
 import com.project.personalexpensetracker.entities.Expense;
+import com.project.personalexpensetracker.entities.enums.ExpenseCategory;
+import com.project.personalexpensetracker.exceptions.InvalidCategoryException;
 import com.project.personalexpensetracker.services.ExpenseService;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/expense")
 @RequiredArgsConstructor
 @CrossOrigin("*")
+@Validated
 public class ExpenseController {
     private final ExpenseService expenseService;
 
     @PostMapping
-    public ResponseEntity<?> postExpense(@RequestBody ExpenseDTO expenseDTO){
+    public ResponseEntity<?> postExpense(@Valid @RequestBody ExpenseDTO expenseDTO){
+        try {
+            ExpenseCategory.valueOf(expenseDTO.getCategory().name());
+        } catch (IllegalArgumentException e) {
+            throw new InvalidCategoryException("Invalid category provided: " + expenseDTO.getCategory());
+        }
+
         Expense createdExpense=expenseService.postExpense(expenseDTO);
 
         if(createdExpense!=null){

@@ -37,6 +37,9 @@ public class StatsServiceImpl implements StatsService {
         Double totalIncome=incomeRepository.sumAllAmount();
         Double totalExpense=expenseRepository.sumAllAmount();
 
+        totalIncome = (totalIncome != null) ? totalIncome : 0.0;
+        totalExpense = (totalExpense != null) ? totalExpense : 0.0;
+
         Optional<Income> optionalIncome=incomeRepository.findFirstByOrderByDateDesc();
         Optional<Expense> optionalExpense=expenseRepository.findFirstByOrderByDateDesc();
 
